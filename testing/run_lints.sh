@@ -37,3 +37,7 @@ if [[ -n "${changed_py_files}" ]]; then
 else
   echo "No files to lint."
 fi
+
+echo "NUM PROCESSORS"
+grep -c '^processor' /proc/cpuinfo
+
