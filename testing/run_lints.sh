@@ -14,18 +14,8 @@
 # limitations under the License.
 # ============================================================================
 
-set -v  # print commands as they're executed
+set -v  # print commands as they are executed
 set -e  # fail and exit on any command erroring
-
-# Make sure the environment variables are set.
-if [ -z "${SHARD}" ]; then
-  echo "SHARD is unset."
-  exit -1
-fi
-
-if [[ ${SHARD} -ne 0 ]]; then
-  exit 0
-fi
 
 get_changed_py_files() {
   # Need to fetch the base branch in case it is not master.
@@ -36,6 +26,8 @@ get_changed_py_files() {
       --diff-filter=AM origin/${TRAVIS_BRANCH}...HEAD \
     | grep '^tensorflow_probability.*\.py$' || true
 }
+
+pip install --quiet pylint
 
 # Run lints on added/changed python files.
 changed_py_files=$(get_changed_py_files)
