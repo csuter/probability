@@ -87,6 +87,7 @@ TF2_FRIENDLY_DISTS = (
     'NegativeBinomial',
     'OneHotCategorical',
     'Pareto',
+    'PERT',
     'Poisson',
     # 'PoissonLogNormalQuadratureCompound' TODO(b/137956955): Add support
     # for hypothesis testing
@@ -1043,6 +1044,12 @@ def fix_triangular(d):
   high = ensure_high_gt_low(peak, d['high'])
   return dict(d, peak=peak, high=high)
 
+def fix_pert(d):
+  peak = ensure_high_gt_low(d['low'], d['peak'])
+  high = ensure_high_gt_low(peak, d['high'])
+  temperature = ensure_high_gt_low(
+    np.zeros(d['temperature'].shape,dtype=np.float32), d['temperature'])
+  return dict(d, peak=peak, high=high, temperature=temperature)
 
 def fix_wishart(d):
   df = d['df']
@@ -1130,6 +1137,8 @@ CONSTRAINTS = {
         fix_lkj,
     'Triangular':
         fix_triangular,
+    'PERT':
+        fix_pert,
     'TruncatedNormal':
         lambda d: dict(d, high=ensure_high_gt_low(d['low'], d['high'])),
     'Uniform':
